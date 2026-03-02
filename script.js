@@ -183,8 +183,8 @@ function setupLogin() {
         
         // 2. Bandingkan hash input dengan hash yang tersimpan
         // Juga tambahkan salt sederhana (username + panjang tertentu)
-        const verifyHash = await sha256(user + pass + 'salt_rahasia_123');
-        
+        const verifyHash = await sha256(pass); 
+
         if (verifyHash === ADMIN_HASH) {
             // Login Berhasil
             sessionStorage.setItem('isLogin', 'true');
@@ -337,3 +337,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
 });
+
