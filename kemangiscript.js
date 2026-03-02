@@ -1,8 +1,8 @@
 /* ========================================== */
 /* 1. KONFIGURASI & KONSTANTA                 */
 /* ========================================== */
-const DB_KEY = 'data_tanaman_jahe';
-const START_DATE = new Date('2025-03-01');
+const DB_KEY = 'data_tanaman_kemangi';
+const START_DATE = new Date('2026-03-01');
 const END_DATE = new Date('2026-12-31');
 const JUMLAH_HARI = Math.round((END_DATE - START_DATE) / (1000 * 60 * 60 * 24)) + 1;
 
@@ -337,4 +337,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
 });
+
 
