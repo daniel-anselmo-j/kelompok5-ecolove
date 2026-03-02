@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kemangi</title>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Notifikasi Toast -->
+    <div id="notification" class="notification">
+        <span id="notification-message">Pesan</span>
+    </div>
+
+    <!-- Navigasi (Diperbarui) -->
+    <nav>
+        <!-- Bagian Kiri: Logo & Teks -->
+        <div class="nav-left">
+            <img src="logo.png" alt="Logo Eco-Love" class="nav-logo">
+            <span class="nav-title">ECO-LOVE HERBAL</span>
+        </div>
+        
+        <!-- Bagian Kanan: Tombol Admin -->
+        <a href="admin.html" target="_blank" class="fade-in-down">Admin</a>
+    </nav>
+
+    <div class="container">
+        <!-- Kartu Tanaman (Animasi Fade In Up) -->
+        <div class="plant-card fade-in-up">
+            <div class="plant-img">
+                <!-- GANTI GAMBAR JAHE -->
+                <img src="https://d1vbn70lmn1nqe.cloudfront.net/prod/wp-content/uploads/2021/11/01025747/ini-4-manfaat-daun-kemangi-yang-jarang-diketahui-halodoc.jpg" alt="Tanaman Kemangi">
+            </div>
+            <div class="plant-info">
+                <span class="badge fade-in-up delay-1">Tanaman Obat</span>
+                <h1 class="fade-in-up delay-2">Kemangi</h1>
+                <p class="latin fade-in-up delay-3">Ocimum basilicum</p>
+                
+                <div class="info-grid">
+                    <div class="info-item fade-in-up delay-4">
+                        <h3>Umur Rata-rata</h3>
+                        <p>4 - 8 Bulan</p>
+                    </div>
+                    <div class="info-item fade-in-up delay-4">
+                        <h3>Panjang Maks</h3>
+                        <p>~ 100 cm</p>
+                    </div>
+                </div>
+
+                <p class="description fade-in-up delay-5">
+                    Kemangi adalah tanaman herbal tropis populer di Indonesia dengan daun hijau segar beraroma khas seperti cengkeh. Sering digunakan sebagai lalapan atau bumbu masakan, kaya vitamin A, C, dan antioxidantes untuk kesehatan pencernaan serta imunitas.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bagian Kandungan & Manfaat (Scroll Animation) -->
+        <div class="info-section">
+            <div class="info-box scroll-hidden scroll-left">
+                <h2>🌿 Kandungan</h2>
+                <ul>
+                    <li><strong>Protein:</strong> Membangun otot, kulit, enzim, hormon, dan antibodi.</li>
+                    <li><strong>Kalsium:</strong> Memperkuat tulang dan gigi, mendukung kontraksi otot.</li>
+                    <li><strong>Kalium:</strong> Mengatur tekanan darah, keseimbangan cairan tubuh.</li>
+                    <li><strong>Magnesium:</strong> Mendukung fungsi saraf, relaksasi otot, produksi energi.</li>
+                        <li><strong>Zat Besi:</strong> Membentuk hemoglobin untuk transport oksigen</li>
+                        <li><strong>Vitamin C:</strong> Antiokside, tingkatkan imunitas, penyerapan zat besi.</li>
+                        <li><strong>Vitamin A:</strong> Jaga penglihatan, kesehatan kulit, sistem imun.</li>
+                        <li><strong>Vitamin K</strong> Pembekuan darah, kesehatan tulang.</li>
+                </ul>
+            </div>
+
+            <div class="info-box scroll-hidden scroll-bottom">
+                <h2>💊 Manfaat Kesehatan</h2>
+                <ul>
+                    <li><strong>Antiokside:</strong> Melindungi sel dari radikal bebas, cegah penuaan dini dan kanker.</li>
+                    <li><strong>Jantung:</strong> Menurunkan tekanan darah, menstabilkan detak jantung berkat magnesium dan eugenol.</li>
+                    <li><strong>Meningkatkan Imun:</strong> Memperkuat pertahanan tubuh terhadap infeki bakteri dan virus.</li>
+                    <li><strong>Memperbaiki Pencernaan:</strong> Meredakan kembung, mual, dan gangguan pencernaan dengan sifat antimikroba.</li>
+                </ul>
+            </div>
+
+            <div class="info-box scroll-hidden scroll-right">
+                <h2>🍳 Kegunaan Sehari-hari</h2>
+                <ul>
+                    <li><strong>Lalapan:</strong> Dimakan mentah dengan sambal dan ikan goreng untuk tambah nafsu makan.</li>
+                    <li><strong>Obat Pusing/Kembung:</strong> Rebus 6 gram daun, minum airnya 2-3 kali sehari.</li>
+                    <li><strong>Masker Wajah:</strong> Campur bubuk kemangi dengan air, oles 15-30 menit 2x seminggu untuk angkat sel kulit mati.</li>
+                    <li><strong>Pengusir Serangga:</strong> Letakkan daun kemangi di dapur untuk jauhkan lalat dan nyamuk.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bagian Tabel Database (Scroll Animation) -->
+        <div class="data-section scroll-hidden scroll-bottom">
+            <h2>📊 Data Pertumbuhan Tanaman</h2>
+            <p class="subtitle">Riwayat panjang tanaman berdasarkan tanggal.</p>
+            
+            <!-- Ringkasan Statistik -->
+            <div class="stats-summary">
+                <div class="stat-box">
+                    <h3>Total Hari</h3>
+                    <p id="total-days">0 Hari</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Tinggi Rata-rata</h3>
+                    <p id="avg-height">0 cm</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="plant-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Panjang (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data akan dimuat oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="no-data-msg" style="display:none; text-align:center; padding: 20px; color: #666;">
+                Data belum tersedia.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <ul class="footer-list">
+            <strong>KELOMPOK 1</strong>
+            <li><strong>Daniel</strong> Anselmo Jonathan</li>
+            <li><strong>Christo</strong>per Florence Xaverius H.</li>
+            <li>Aloisius Gonzaga <strong>Noel</strong> Budi Agung Arlino</li>
+            <li>Natha<strong>Niel</strong> Gautama</li>
+            <li><strong>Ken</strong>t Northon</li>
+        </ul>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
