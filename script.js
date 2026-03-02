@@ -9,7 +9,7 @@ const JUMLAH_HARI = Math.round((END_DATE - START_DATE) / (1000 * 60 * 60 * 24)) 
 // --- KONFIGURASI KEAMANAN ---
 // Password default: admin123 (di-hash menggunakan SHA-256)
 // Hash ini tidak bisa dikembalikan ke teks asli dengan mudah
-const ADMIN_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'; 
+const ADMIN_HASH = '986d82f8267a13456b7fe17c9153383030ea65b4f1a419936346cdfe8e89538c'; 
 
 const MAX_ATTEMPTS = 5;           // Maksimal percobaan login
 const LOCKOUT_TIME = 60000;       // Waktu kunci (60 detik)
@@ -337,5 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
 });
+
 
 
