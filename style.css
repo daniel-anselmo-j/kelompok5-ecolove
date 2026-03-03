@@ -39,6 +39,74 @@ footer p {
     font-weight: 500;
 }
 
+/* ... (Kode CSS sebelumnya tetap sama, tambahkan ini di bawah) ... */
+
+/* --- Panel Kontrol Admin Baru --- */
+.day-display-box {
+    background: var(--light);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 2px solid var(--primary);
+}
+
+.day-display-box h3 {
+    color: var(--gray);
+    margin-bottom: 5px;
+}
+
+.day-display-box h1 {
+    color: var(--primary);
+    font-size: 4rem;
+    margin: 0;
+    line-height: 1;
+}
+
+.control-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.control-grid .btn {
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+.manual-controls {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.manual-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.manual-buttons .btn {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Indikator Status Timer */
+.timer-status {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-style: italic;
+}
+
 /* --- Notifikasi Toast --- */
 .notification {
     visibility: hidden;
@@ -476,5 +544,6 @@ tr:hover { background-color: #f0f7f4; }
     .header-buttons .btn { width: auto; }
 
 }
+
 
 
