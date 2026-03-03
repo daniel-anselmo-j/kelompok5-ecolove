@@ -2,13 +2,14 @@
 /* 1. KONFIGURASI & KONSTANTA                 */
 /* ========================================== */
 const DB_KEY = 'kemangi_data_hari';
-const ADMIN_HASH = '986d82f8267a13456b7fe17c9153383030ea65b4f1a419936346cdfe8e89538c'; 
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD_HASH = '986d82f8267a13456b7fe17c9153383030ea65b4f1a419936346cdfe8e89538c'; // Hash dari 'admin123'
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_TIME = 60000; // 60 detik
 
 let loginAttempts = parseInt(localStorage.getItem('loginAttempts')) || 0;
 let lockoutEndTime = parseInt(localStorage.getItem('lockoutEndTime')) || 0;
-let timerInterval = null; // Menyimpan ID interval timer
+let timerInterval = null;
 
 // Struktur Data: { days: 0, lastUpdate: 0, isRunning: false }
 function getStoredData() {
@@ -117,7 +118,7 @@ function startTimer() {
             data.lastUpdate = now;
             saveStoredData(data);
             updateIndexDisplay();
-            updateAdminDisplay(); // Update tampilan admin jika terbuka
+            updateAdminDisplay();
             showNotification(`Hari ke-${data.days} dimulai!`, false);
         }
     }, 1000); // Cek setiap 1 detik
@@ -167,7 +168,7 @@ function setupLogin() {
             return;
         }
 
-        const user = document.getElementById('username').value;
+        const user = document.getElementById('username').value.trim();
         const pass = document.getElementById('password').value;
 
         if (!user || !pass) {
@@ -175,9 +176,20 @@ function setupLogin() {
             return;
         }
 
+        // --- VALIDASI USERNAME ---
+        if (user !== ADMIN_USERNAME) {
+            errorMsg.style.display = 'block';
+            errorMsg.innerText = 'Username salah!';
+            handleFailedAttempt();
+            showNotification('Username salah!', true);
+            return;
+        }
+
+        // --- VALIDASI PASSWORD (HASHING) ---
         const inputHash = await sha256(pass);
 
-        if (inputHash === ADMIN_HASH) {
+        if (inputHash === ADMIN_PASSWORD_HASH) {
+            // Login Berhasil
             sessionStorage.setItem('isLogin', 'true');
             loginPage.style.display = 'none';
             adminPage.style.display = 'flex';
@@ -188,7 +200,10 @@ function setupLogin() {
             if (data.isRunning) startTimer();
             showNotification('Login berhasil! Selamat datang Admin.');
         } else {
+            // Login Gagal
             errorMsg.style.display = 'block';
+            errorMsg.innerText = 'Password salah!';
+            
             const isNowLocked = handleFailedAttempt();
             
             if (isNowLocked) {
@@ -196,7 +211,7 @@ function setupLogin() {
                 errorMsg.innerText = `Terlalu banyak percobaan. Coba lagi dalam ${LOCKOUT_TIME/1000} detik.`;
             } else {
                 const remaining = MAX_ATTEMPTS - loginAttempts;
-                showNotification(`Username atau Password salah! Sisa percobaan: ${remaining}`, true);
+                showNotification(`Password salah! Sisa percobaan: ${remaining}`, true);
             }
         }
     });
@@ -255,7 +270,7 @@ function setupAdminControls() {
     btnPlus.addEventListener('click', () => {
         const data = getStoredData();
         data.days++;
-        data.lastUpdate = Date.now(); // Reset timer agar tidak langsung naik lagi
+        data.lastUpdate = Date.now();
         saveStoredData(data);
         updateAdminDisplay();
         updateIndexDisplay();
@@ -326,4 +341,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
-});8
+});
