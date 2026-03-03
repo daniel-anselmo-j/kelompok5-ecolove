@@ -1,22 +1,27 @@
 /* ========================================== */
 /* 1. KONFIGURASI & KONSTANTA                 */
 /* ========================================== */
-const DB_KEY = 'data_tanaman_kemangi';
-const START_DATE = new Date('2026-03-01');
-const END_DATE = new Date('2026-12-31');
-const JUMLAH_HARI = Math.round((END_DATE - START_DATE) / (1000 * 60 * 60 * 24)) + 1;
-
-// --- KONFIGURASI KEAMANAN ---
-// Password default: admin123 (di-hash menggunakan SHA-256)
-// Hash ini tidak bisa dikembalikan ke teks asli dengan mudah
+const DB_KEY = 'kemangi_data_hari';
 const ADMIN_HASH = '986d82f8267a13456b7fe17c9153383030ea65b4f1a419936346cdfe8e89538c'; 
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_TIME = 60000; // 60 detik
 
-const MAX_ATTEMPTS = 5;           // Maksimal percobaan login
-const LOCKOUT_TIME = 60000;       // Waktu kunci (60 detik)
-
-// --- VARIABLE KEAMANAN (TIDAK DIKIRIM KE SERVER) ---
 let loginAttempts = parseInt(localStorage.getItem('loginAttempts')) || 0;
 let lockoutEndTime = parseInt(localStorage.getItem('lockoutEndTime')) || 0;
+let timerInterval = null; // Menyimpan ID interval timer
+
+// Struktur Data: { days: 0, lastUpdate: 0, isRunning: false }
+function getStoredData() {
+    const data = localStorage.getItem(DB_KEY);
+    if (!data) {
+        return { days: 0, lastUpdate: Date.now(), isRunning: false };
+    }
+    return JSON.parse(data);
+}
+
+function saveStoredData(data) {
+    localStorage.setItem(DB_KEY, JSON.stringify(data));
+}
 
 /* ========================================== */
 /* 2. FUNGSI NOTIFIKASI TOAST                */
@@ -44,8 +49,6 @@ function showNotification(message, isError = false) {
 /* ========================================== */
 /* 3. FUNGSI KEAMANAN (HASHING & LOCKOUT)    */
 /* ========================================== */
-
-// Fungsi hashing SHA-256 (Menggunakan Web Crypto API)
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -54,17 +57,14 @@ async function sha256(message) {
     return hashHex;
 }
 
-// Cek apakah masih dalam kondisi locked out
 function isLockedOut() {
     const now = Date.now();
     if (lockoutEndTime > now) {
-        const remaining = Math.ceil((lockoutEndTime - now) / 1000);
-        return remaining;
+        return Math.ceil((lockoutEndTime - now) / 1000);
     }
     return 0;
 }
 
-// Update counter percobaan login
 function handleFailedAttempt() {
     loginAttempts++;
     localStorage.setItem('loginAttempts', loginAttempts);
@@ -74,12 +74,11 @@ function handleFailedAttempt() {
         localStorage.setItem('lockoutEndTime', lockoutEndTime);
         loginAttempts = 0;
         localStorage.setItem('loginAttempts', 0);
-        return true; // Berarti baru saja dikunci
+        return true;
     }
     return false;
 }
 
-// Reset counter setelah login berhasil
 function resetLoginAttempts() {
     loginAttempts = 0;
     lockoutEndTime = 0;
@@ -90,59 +89,58 @@ function resetLoginAttempts() {
 /* ========================================== */
 /* 4. FUNGSI UNTUK HALAMAN UTAMA (INDEX)     */
 /* ========================================== */
-function loadDataIndex() {
-    const tbody = document.querySelector('#plant-table tbody');
-    const noDataMsg = document.getElementById('no-data-msg');
-    const rawData = localStorage.getItem(DB_KEY);
-
-    if (!tbody) return;
-
-    if (!rawData) {
-        noDataMsg.style.display = 'block';
-        return;
-    }
-
-    const data = JSON.parse(rawData);
-    const validData = data.filter(item => item.panjang && item.panjang !== "");
-
-    if (validData.length === 0) {
-        noDataMsg.style.display = 'block';
-        return;
-    }
-
-    let html = '';
-    validData.forEach((item) => {
-        html += `
-            <tr>
-                <td>${item.no}</td>
-                <td>${item.tanggal}</td>
-                <td>${item.panjang} cm</td>
-            </tr>
-        `;
-    });
-
-    tbody.innerHTML = html;
-    updateStats(validData);
-}
-
-function updateStats(data) {
+function updateIndexDisplay() {
+    const data = getStoredData();
     const totalDaysEl = document.getElementById('total-days');
-    const avgHeightEl = document.getElementById('avg-height');
-
-    if (data.length > 0) {
-        const totalDays = data.length;
-        const totalHeight = data.reduce((sum, item) => sum + parseFloat(item.panjang), 0);
-        const avgHeight = (totalHeight / data.length).toFixed(1);
-
-        if (totalDaysEl) totalDaysEl.innerText = `${totalDays} Hari`;
-        if (avgHeightEl) avgHeightEl.innerText = `${avgHeight} cm`;
+    
+    if (totalDaysEl) {
+        totalDaysEl.innerText = `${data.days} Hari`;
     }
 }
 
 /* ========================================== */
-/* 5. FUNGSI UNTUK HALAMAN ADMIN             */
+/* 5. FUNGSI TIMER & LOGIKA HARI             */
 /* ========================================== */
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+        const data = getStoredData();
+        if (!data.isRunning) return;
 
+        const now = Date.now();
+        const diff = now - data.lastUpdate;
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        if (diff >= oneDay) {
+            data.days++;
+            data.lastUpdate = now;
+            saveStoredData(data);
+            updateIndexDisplay();
+            updateAdminDisplay(); // Update tampilan admin jika terbuka
+            showNotification(`Hari ke-${data.days} dimulai!`, false);
+        }
+    }, 1000); // Cek setiap 1 detik
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function updateAdminDisplay() {
+    const data = getStoredData();
+    const displayEl = document.getElementById('current-day-display');
+    if (displayEl) {
+        displayEl.innerText = data.days;
+    }
+}
+
+/* ========================================== */
+/* 6. FUNGSI UNTUK HALAMAN ADMIN             */
+/* ========================================== */
 function setupLogin() {
     const form = document.getElementById('form-login');
     const errorMsg = document.getElementById('login-error');
@@ -155,13 +153,14 @@ function setupLogin() {
     if (sessionStorage.getItem('isLogin') === 'true') {
         loginPage.style.display = 'none';
         adminPage.style.display = 'flex';
-        generateInputTable();
+        updateAdminDisplay();
+        const data = getStoredData();
+        if (data.isRunning) startTimer();
     }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // --- CEK LOCKOUT TERLEBIH DAHULU ---
         const lockStatus = isLockedOut();
         if (lockStatus > 0) {
             showNotification(`Terlalu banyak percobaan! Coba lagi dalam ${lockStatus} detik.`, true);
@@ -171,42 +170,29 @@ function setupLogin() {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
 
-        // Validasi input tidak kosong
         if (!user || !pass) {
             showNotification('Username dan Password harus diisi!', true);
             return;
         }
 
-        // --- PROSES LOGIN DENGAN HASHING ---
-        // 1. Hash input password menggunakan SHA-256
         const inputHash = await sha256(pass);
-        
-        // 2. Bandingkan hash input dengan hash yang tersimpan
-        // Juga tambahkan salt sederhana (username + panjang tertentu)
-        const verifyHash = await sha256(pass); 
 
-        if (verifyHash === ADMIN_HASH) {
-            // Login Berhasil
+        if (inputHash === ADMIN_HASH) {
             sessionStorage.setItem('isLogin', 'true');
             loginPage.style.display = 'none';
             adminPage.style.display = 'flex';
-            generateInputTable();
             errorMsg.style.display = 'none';
-            
-            // Reset counter
             resetLoginAttempts();
-            
+            updateAdminDisplay();
+            const data = getStoredData();
+            if (data.isRunning) startTimer();
             showNotification('Login berhasil! Selamat datang Admin.');
         } else {
-            // Login Gagal
             errorMsg.style.display = 'block';
-            
-            // Tangani percobaan gagal
             const isNowLocked = handleFailedAttempt();
             
             if (isNowLocked) {
                 showNotification('Terlalu banyak percobaan! Akun dikunci sementara.', true);
-                // Update pesan error agar user tahu mereka dikunci
                 errorMsg.innerText = `Terlalu banyak percobaan. Coba lagi dalam ${LOCKOUT_TIME/1000} detik.`;
             } else {
                 const remaining = MAX_ATTEMPTS - loginAttempts;
@@ -218,104 +204,108 @@ function setupLogin() {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
+            stopTimer();
             sessionStorage.removeItem('isLogin');
             location.reload();
         });
     }
 }
 
-function generateInputTable() {
-    const tbody = document.querySelector('#input-table tbody');
-    if (!tbody) return;
+function setupAdminControls() {
+    const btnStart = document.getElementById('btn-start');
+    const btnPause = document.getElementById('btn-pause');
+    const btnStop = document.getElementById('btn-stop');
+    const btnPlus = document.getElementById('btn-plus');
+    const btnMinus = document.getElementById('btn-minus');
+    const btnReset = document.getElementById('reset-data-btn');
 
-    let currentDate = new Date(START_DATE);
-    let html = '';
+    if (!btnStart) return;
 
-    for (let i = 0; i < JUMLAH_HARI; i++) {
-        const tanggalStr = currentDate.toLocaleDateString('id-ID', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
+    // Tombol Mulai
+    btnStart.addEventListener('click', () => {
+        const data = getStoredData();
+        data.isRunning = true;
+        saveStoredData(data);
+        startTimer();
+        showNotification('Timer dimulai. Hari akan bertambah otomatis setiap 24 jam.');
+    });
 
-        html += `
-            <tr>
-                <td>${i + 1}</td>
-                <td>${tanggalStr}</td>
-                <td><input type="number" class="length-input" placeholder="Cm" min="0"></td>
-            </tr>
-        `;
+    // Tombol Jeda
+    btnPause.addEventListener('click', () => {
+        const data = getStoredData();
+        data.isRunning = false;
+        saveStoredData(data);
+        stopTimer();
+        showNotification('Timer dijeda.');
+    });
 
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    tbody.innerHTML = html;
-    loadExistingDataToInput();
-}
-
-function loadExistingDataToInput() {
-    const rawData = localStorage.getItem(DB_KEY);
-    if (!rawData) return;
-
-    const data = JSON.parse(rawData);
-    const inputs = document.querySelectorAll('.length-input');
-
-    data.forEach((item, index) => {
-        if (inputs[index]) {
-            if (item.panjang && item.panjang !== "") {
-                inputs[index].value = item.panjang;
-            }
+    // Tombol Berhenti (Reset Hari ke 0)
+    btnStop.addEventListener('click', () => {
+        if(confirm('Apakah Anda yakin ingin mereset semua data ke 0 Hari?')) {
+            const data = { days: 0, lastUpdate: Date.now(), isRunning: false };
+            saveStoredData(data);
+            stopTimer();
+            updateAdminDisplay();
+            updateIndexDisplay();
+            showNotification('Data telah direset ke 0 Hari.');
         }
     });
-}
 
-function saveData() {
-    const inputs = document.querySelectorAll('.length-input');
-    const processedData = [];
-    let currentDate = new Date(START_DATE);
+    // Tombol Manual +
+    btnPlus.addEventListener('click', () => {
+        const data = getStoredData();
+        data.days++;
+        data.lastUpdate = Date.now(); // Reset timer agar tidak langsung naik lagi
+        saveStoredData(data);
+        updateAdminDisplay();
+        updateIndexDisplay();
+        showNotification('Hari ditambah manual.');
+    });
 
-    for (let i = 0; i < JUMLAH_HARI; i++) {
-        const val = inputs[i].value;
-        
-        const tanggalStr = currentDate.toLocaleDateString('id-ID', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    // Tombol Manual -
+    btnMinus.addEventListener('click', () => {
+        const data = getStoredData();
+        if (data.days > 0) {
+            data.days--;
+            data.lastUpdate = Date.now();
+            saveStoredData(data);
+            updateAdminDisplay();
+            updateIndexDisplay();
+            showNotification('Hari dikurangi manual.');
+        } else {
+            showNotification('Hari tidak bisa kurang dari 0.', true);
+        }
+    });
+
+    // Tombol Reset Data Total
+    if (btnReset) {
+        btnReset.addEventListener('click', () => {
+            if(confirm('Hapus semua data dan reset login?')) {
+                localStorage.removeItem(DB_KEY);
+                localStorage.removeItem('loginAttempts');
+                localStorage.removeItem('lockoutEndTime');
+                location.reload();
+            }
         });
-
-        processedData.push({
-            no: i + 1,
-            tanggal: tanggalStr,
-            panjang: val
-        });
-
-        currentDate.setDate(currentDate.getDate() + 1);
     }
-
-    localStorage.setItem(DB_KEY, JSON.stringify(processedData));
-    showNotification('Data berhasil disimpan!');
 }
 
 /* ========================================== */
-/* 6. INISIALISASI & ANIMASI SCROLL          */
+/* 7. INISIALISASI & ANIMASI SCROLL          */
 /* ========================================== */
 document.addEventListener('DOMContentLoaded', () => {
     
-    if (document.getElementById('plant-table')) {
-        loadDataIndex();
-    }
+    // Update tampilan index
+    updateIndexDisplay();
 
+    // Setup Login & Admin
     if (document.getElementById('login-page')) {
         setupLogin();
     }
 
-    if (document.getElementById('save-btn')) {
-        document.getElementById('save-btn').addEventListener('click', saveData);
-    }
-
-    if (document.getElementById('reset-btn')) {
-        document.getElementById('reset-btn').addEventListener('click', () => {
-            if(confirm('Reset semua data input di form ini?')) {
-                document.querySelectorAll('.length-input').forEach(input => input.value = '');
-                showNotification('Form input telah direset.');
-            }
-        });
+    // Setup Kontrol Admin
+    if (document.getElementById('admin-page')) {
+        setupAdminControls();
     }
 
     /* --- Animasi Scroll --- */
@@ -336,7 +326,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
-});
-
-
-
+});8
