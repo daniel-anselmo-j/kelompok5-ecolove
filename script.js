@@ -1,5 +1,5 @@
 /* ========================================== */
-/* 1. KONFIGURASI & KONSTANTA                 */
+/* 1. KONFIGURASI & KONSTANTA                 */ 
 /* ========================================== */
 const DB_KEY = 'kemangi_data_hari';
 const ADMIN_USERNAME = 'admin';
@@ -342,3 +342,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
 });
+
