@@ -35,10 +35,10 @@
         </div>
     </div>
 
-    <!-- 2. Dashboard Admin (Tersembunyi) -->
+    <!-- 2. Dashboard Admin (Kontrol Hari) -->
     <div id="admin-page" class="admin-wrapper" style="display: none;">
         <div class="admin-header-box">
-            <h2>Admin Dashboard</h2>
+            <h2>Panel Kontrol Hari</h2>
             <div class="header-buttons">
                 <button id="logout-btn" class="btn btn-danger">Logout</button>
                 <a href="index.html" target="_blank" class="btn btn-secondary">Lihat Web</a>
@@ -47,29 +47,37 @@
 
         <div class="admin-content">
             <div class="instructions">
-                <h3>Input Data Pertumbuhan</h3>
-                <p>Isi kolom panjang (dalam cm)<br>
-                <strong>Tips:</strong> Data yang kosong tidak akan ditampilkan di halaman utama.</p>
+                <h3>Atur Waktu Tumbuh</h3>
+                <p>Hari akan bertambah otomatis setiap 24 jam jika tombol <strong>Mulai</strong> ditekan.</p>
             </div>
 
-            <div class="table-wrapper">
-                <table id="input-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal (Otomatis)</th>
-                            <th>Panjang (cm)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Input generation akan dilakukan oleh JS -->
-                    </tbody>
-                </table>
+            <!-- Tampilan Hari Saat Ini -->
+            <div class="day-display-box">
+                <h3>Hari Ke-</h3>
+                <h1 id="current-day-display">0</h1>
             </div>
 
-            <div class="action-area">
-                <button id="save-btn" class="btn btn-primary">Simpan Data</button>
-                <button id="reset-btn" class="btn btn-secondary">Reset Form</button>
+            <!-- Tombol Kontrol -->
+            <div class="control-grid">
+                <button id="btn-start" class="btn btn-primary">Mulai (Start)</button>
+                <button id="btn-pause" class="btn btn-secondary">Jeda (Pause)</button>
+                <button id="btn-stop" class="btn btn-danger">Berhenti (Stop)</button>
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+            <!-- Kontrol Manual -->
+            <div class="manual-controls">
+                <h3>Kontrol Manual</h3>
+                <div class="manual-buttons">
+                    <button id="btn-minus" class="btn btn-secondary">-</button>
+                    <span style="font-size: 1.5rem; font-weight: bold; margin: 0 15px;">HARI</span>
+                    <button id="btn-plus" class="btn btn-secondary">+</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <button id="reset-data-btn" class="btn btn-danger" style="font-size: 0.8rem; padding: 5px 10px;">Reset Semua Data</button>
             </div>
         </div>
     </div>
@@ -77,5 +85,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
