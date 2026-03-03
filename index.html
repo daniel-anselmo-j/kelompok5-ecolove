@@ -14,20 +14,17 @@
         <span id="notification-message">Pesan</span>
     </div>
 
-    <!-- Navigasi (Diperbarui) -->
+    <!-- Navigasi -->
     <nav>
-        <!-- Bagian Kiri: Logo & Teks -->
         <div class="nav-left">
             <img src="logo.png" alt="Logo Eco-Love" class="nav-logo">
             <span class="nav-title">ECO-LOVE HERBAL</span>
         </div>
-        
-        <!-- Bagian Kanan: Tombol Admin -->
         <a href="admin.html" target="_blank" class="fade-in-down">Admin</a>
     </nav>
 
     <div class="container">
-        <!-- Kartu Tanaman (Animasi Fade In Up) -->
+        <!-- Kartu Tanaman -->
         <div class="plant-card fade-in-up">
             <div class="plant-img">
                 <img src="https://d1vbn70lmn1nqe.cloudfront.net/prod/wp-content/uploads/2021/11/01025747/ini-4-manfaat-daun-kemangi-yang-jarang-diketahui-halodoc.jpg" alt="Tanaman Kemangi">
@@ -54,76 +51,57 @@
             </div>
         </div>
 
-        <!-- Bagian Kandungan & Manfaat (Scroll Animation) -->
+        <!-- Bagian Informasi (Scroll Animation) -->
         <div class="info-section">
             <div class="info-box scroll-hidden scroll-left">
                 <h2>🌿 Kandungan</h2>
                 <ul>
                     <li><strong>Protein:</strong> Membangun otot, kulit, enzim, hormon, dan antibodi.</li>
-                    <li><strong>Kalsium:</strong> Memperkuat tulang dan gigi, mendukung kontraksi otot.</li>
-                    <li><strong>Kalium:</strong> Mengatur tekanan darah, keseimbangan cairan tubuh.</li>
-                    <li><strong>Magnesium:</strong> Mendukung fungsi saraf, relaksasi otot, produksi energi.</li>
-                        <li><strong>Zat Besi:</strong> Membentuk hemoglobin untuk transport oksigen</li>
-                        <li><strong>Vitamin C:</strong> Antiokside, tingkatkan imunitas, penyerapan zat besi.</li>
-                        <li><strong>Vitamin A:</strong> Jaga penglihatan, kesehatan kulit, sistem imun.</li>
-                        <li><strong>Vitamin K</strong> Pembekuan darah, kesehatan tulang.</li>
+                    <li><strong>Kalsium:</strong> Memperkuat tulang dan gigi.</li>
+                    <li><strong>Kalium:</strong> Mengatur tekanan darah.</li>
+                    <li><strong>Magnesium:</strong> Mendukung fungsi saraf.</li>
+                    <li><strong>Zat Besi:</strong> Transport oksigen.</li>
+                    <li><strong>Vitamin C:</strong> Tingkatkan imunitas.</li>
+                    <li><strong>Vitamin A:</strong> Jaga penglihatan.</li>
+                    <li><strong>Vitamin K:</strong> Pembekuan darah.</li>
                 </ul>
             </div>
 
             <div class="info-box scroll-hidden scroll-bottom">
                 <h2>💊 Manfaat Kesehatan</h2>
                 <ul>
-                    <li><strong>Antiokside:</strong> Melindungi sel dari radikal bebas, cegah penuaan dini dan kanker.</li>
-                    <li><strong>Jantung:</strong> Menurunkan tekanan darah, menstabilkan detak jantung berkat magnesium dan eugenol.</li>
-                    <li><strong>Meningkatkan Imun:</strong> Memperkuat pertahanan tubuh terhadap infeki bakteri dan virus.</li>
-                    <li><strong>Memperbaiki Pencernaan:</strong> Meredakan kembung, mual, dan gangguan pencernaan dengan sifat antimikroba.</li>
+                    <li><strong>Antiokside:</strong> Melindungi sel dari radikal bebas.</li>
+                    <li><strong>Jantung:</strong> Menurunkan tekanan darah.</li>
+                    <li><strong>Meningkatkan Imun:</strong> Pertahanan tubuh.</li>
+                    <li><strong>Pencernaan:</strong> Meredakan kembung.</li>
                 </ul>
             </div>
 
             <div class="info-box scroll-hidden scroll-right">
                 <h2>🍳 Kegunaan Sehari-hari</h2>
                 <ul>
-                    <li><strong>Lalapan:</strong> Dimakan mentah dengan sambal dan ikan goreng untuk tambah nafsu makan.</li>
-                    <li><strong>Obat Pusing/Kembung:</strong> Rebus 6 gram daun, minum airnya 2-3 kali sehari.</li>
-                    <li><strong>Masker Wajah:</strong> Campur bubuk kemangi dengan air, oles 15-30 menit 2x seminggu untuk angkat sel kulit mati.</li>
-                    <li><strong>Pengusir Serangga:</strong> Letakkan daun kemangi di dapur untuk jauhkan lalat dan nyamuk.</li>
+                    <li><strong>Lalapan:</strong> Makan mentah dengan sambal.</li>
+                    <li><strong>Obat Pusing:</strong> Rebus daun, minum airnya.</li>
+                    <li><strong>Masker Wajah:</strong> Campur bubuk dengan air.</li>
+                    <li><strong>Pengusir Serangga:</strong> Letakkan di dapur.</li>
                 </ul>
             </div>
         </div>
 
-        <!-- Bagian Tabel Database (Scroll Animation) -->
+        <!-- Bagian Statistik Sederhana -->
         <div class="data-section scroll-hidden scroll-bottom">
-            <h2>📊 Data Pertumbuhan Tanaman</h2>
-            <p class="subtitle">Riwayat panjang tanaman berdasarkan tanggal.</p>
+            <h2>📊 Status Pertumbuhan</h2>
+            <p class="subtitle">Monitoring waktu tumbuh tanaman.</p>
             
-            <!-- Ringkasan Statistik -->
             <div class="stats-summary">
                 <div class="stat-box">
-                    <h3>Total Hari</h3>
+                    <h3>Total Hari Tumbuh</h3>
                     <p id="total-days">0 Hari</p>
                 </div>
-                <div class="stat-box">
-                    <h3>Tinggi Rata-rata</h3>
-                    <p id="avg-height">0 cm</p>
-                </div>
             </div>
-
-            <div class="table-wrapper">
-                <table id="plant-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Panjang (cm)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data akan dimuat oleh JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <div id="no-data-msg" style="display:none; text-align:center; padding: 20px; color: #666;">
-                Data belum tersedia.
+            
+            <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.9rem;">
+                <p>Data diperbarui otomatis setiap 24 jam.</p>
             </div>
         </div>
     </div>
@@ -132,7 +110,7 @@
         <ul class="footer-list">
             <strong>KELOMPOK 5</strong>
             <li><strong>Daniel</strong> Anselmo Jonathan</li>
-            <li><strong>Christo</strong>per Florence Xaverius H.</li>
+            <li><strong>Christo</strong>pher Florence Xaverius H.</li>
             <li><strong>Isaac</strong> Azrael Lumbangaol</li>
             <li>Natha<strong>Niel</strong> Gautama</li>
             <li><strong>Kent</strong> Northon Hutahaean</li>
@@ -142,11 +120,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
