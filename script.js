@@ -4,7 +4,7 @@
 const DB_KEY_KEMANGI = 'kemangi_data_hari';
 const DB_KEY_KENCUR = 'kencur_data_hari';
 const ADMIN_USERNAME = 'kelompok5';
-const ADMIN_PASSWORD_HASH = 'b1c530c5145a00aa7fa42d3dd40f7d061ccc1843def19744ddf5d2e8af18774f'; // Hash dari 'admin123'
+const ADMIN_PASSWORD_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'; // Hash dari 'admin123'
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_TIME = 60000; // 60 detik
 
@@ -432,4 +432,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
 });
+
 
