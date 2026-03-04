@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kencur</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Notifikasi Toast -->
+    <div id="notification" class="notification">
+        <span id="notification-message">Pesan</span>
+    </div>
+
+    <!-- Navigasi -->
+    <nav>
+        <div class="nav-left">
+            <img src="logo.png" alt="Logo Eco-Love" class="nav-logo">
+            <span class="nav-title">ECO-LOVE HERBAL</span>
+        </div>
+        <div class="nav-right">
+            <a href="index.html" class="fade-in-down">Kemangi</a>
+            <a href="admin.html" target="_blank" class="fade-in-down">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Kartu Tanaman -->
+        <div class="plant-card fade-in-up">
+            <div class="plant-img">
+                <!-- Gambar Kencur -->
+                <img src="https://asset.kompas.com/crops/0XqXqXqXqXqXqXqXqXqXqXqXqXq/0x0:0x0/750x500/data/photo/2020/08/17/5f39333333333.jpg" alt="Tanaman Kencur">
+            </div>
+            <div class="plant-info">
+                <span class="badge fade-in-up delay-1">Tanaman Obat</span>
+                <h1 class="fade-in-up delay-2">Kencur</h1>
+                <p class="latin fade-in-up delay-3">Kaempferia galanga</p>
+                
+                <div class="info-grid">
+                    <div class="info-item fade-in-up delay-4">
+                        <h3>Umur Rata-rata</h3>
+                        <p>6 - 10 Bulan</p>
+                    </div>
+                    <div class="info-item fade-in-up delay-4">
+                        <h3>Panjang Maks</h3>
+                        <p>~ 60 cm</p>
+                    </div>
+                </div>
+
+                <p class="description fade-in-up delay-5">
+                    Kencur adalah rimpang yang memiliki aroma khas dan tajam. Sering digunakan sebagai bahan jamu, bumbu dapur, dan obat tradisional untuk meredakan pegal linu serta batuk.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bagian Informasi (Scroll Animation) -->
+        <div class="info-section">
+            <div class="info-box scroll-hidden scroll-left">
+                <h2>🌿 Kandungan</h2>
+                <ul>
+                    <li><strong>Ar-turmeron:</strong> Antioksidan kuat.</li>
+                    <li><strong>Flavonoid:</strong> Melawan radikal bebas.</li>
+                    <li><strong>Minyak Atsiri:</strong> Aroma khas dan antiseptik.</li>
+                    <li><strong>Protein & Serat:</strong> Nutrisi dasar.</li>
+                </ul>
+            </div>
+
+            <div class="info-box scroll-hidden scroll-bottom">
+                <h2>💊 Manfaat Kesehatan</h2>
+                <ul>
+                    <li><strong>Pegal Linu:</strong> Menghilangkan rasa sakit otot.</li>
+                    <li><strong>Perut:</strong> Meredakan maag dan kembung.</li>
+                    <li><strong>Peredaran Darah:</strong> Melancarkan aliran darah.</li>
+                    <li><strong>Antibakteri:</strong> Melawan infeksi ringan.</li>
+                </ul>
+            </div>
+
+            <div class="info-box scroll-hidden scroll-right">
+                <h2>🍳 Kegunaan Sehari-hari</h2>
+                <ul>
+                    <li><strong>Jamu:</strong> Dicampur gula merah dan air.</li>
+                    <li><strong>Bumbu:</strong> Sayur asem atau gulai.</li>
+                    <li><strong>Parfum:</strong> Minyak atsiri untuk wewangian.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bagian Statistik Sederhana -->
+        <div class="data-section scroll-hidden scroll-bottom">
+            <h2>📊 Status Pertumbuhan</h2>
+            <p class="subtitle">Monitoring waktu tumbuh tanaman.</p>
+            
+            <div class="stats-summary">
+                <div class="stat-box">
+                    <h3>Total Hari Tumbuh</h3>
+                    <p id="total-days-kencur">0 Hari</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.9rem;">
+                <p>Data diperbarui otomatis setiap 24 jam.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <ul class="footer-list">
+            <strong>KELOMPOK 5</strong>
+            <li><strong>Daniel</strong> Anselmo Jonathan</li>
+            <li><strong>Christo</strong>pher Florence Xaverius H.</li>
+            <li><strong>Isaac</strong> Azrael Lumbangaol</li>
+            <li>Natha<strong>Niel</strong> Gautama</li>
+            <li><strong>Kent</strong> Northon Hutahaean</li>
+        </ul>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
