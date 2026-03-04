@@ -1,7 +1,8 @@
 /* ========================================== */
 /* 1. KONFIGURASI & KONSTANTA                 */ 
 /* ========================================== */
-const DB_KEY = 'kemangi_data_hari';
+const DB_KEY_KEMANGI = 'kemangi_data_hari';
+const DB_KEY_KENCUR = 'kencur_data_hari';
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'; // Hash dari 'admin123'
 const MAX_ATTEMPTS = 5;
@@ -12,16 +13,16 @@ let lockoutEndTime = parseInt(localStorage.getItem('lockoutEndTime')) || 0;
 let timerInterval = null;
 
 // Struktur Data: { days: 0, lastUpdate: 0, isRunning: false }
-function getStoredData() {
-    const data = localStorage.getItem(DB_KEY);
+function getStoredData(key) {
+    const data = localStorage.getItem(key);
     if (!data) {
         return { days: 0, lastUpdate: Date.now(), isRunning: false };
     }
     return JSON.parse(data);
 }
 
-function saveStoredData(data) {
-    localStorage.setItem(DB_KEY, JSON.stringify(data));
+function saveStoredData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
 /* ========================================== */
@@ -91,11 +92,18 @@ function resetLoginAttempts() {
 /* 4. FUNGSI UNTUK HALAMAN UTAMA (INDEX)     */
 /* ========================================== */
 function updateIndexDisplay() {
-    const data = getStoredData();
+    // Update Kemangi
+    const dataKemangi = getStoredData(DB_KEY_KEMANGI);
     const totalDaysEl = document.getElementById('total-days');
-    
     if (totalDaysEl) {
-        totalDaysEl.innerText = `${data.days} Hari`;
+        totalDaysEl.innerText = `${dataKemangi.days} Hari`;
+    }
+
+    // Update Kencur
+    const dataKencur = getStoredData(DB_KEY_KENCUR);
+    const totalDaysKencurEl = document.getElementById('total-days-kencur');
+    if (totalDaysKencurEl) {
+        totalDaysKencurEl.innerText = `${dataKencur.days} Hari`;
     }
 }
 
@@ -106,20 +114,38 @@ function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
     
     timerInterval = setInterval(() => {
-        const data = getStoredData();
-        if (!data.isRunning) return;
+        // Cek Kemangi
+        let dataKemangi = getStoredData(DB_KEY_KEMANGI);
+        if (dataKemangi.isRunning) {
+            const now = Date.now();
+            const diff = now - dataKemangi.lastUpdate;
+            const oneDay = 24 * 60 * 60 * 1000;
 
-        const now = Date.now();
-        const diff = now - data.lastUpdate;
-        const oneDay = 24 * 60 * 60 * 1000;
+            if (diff >= oneDay) {
+                dataKemangi.days++;
+                dataKemangi.lastUpdate = now;
+                saveStoredData(DB_KEY_KEMANGI, dataKemangi);
+                updateIndexDisplay();
+                updateAdminDisplay();
+                showNotification(`Hari Kemangi ke-${dataKemangi.days} dimulai!`, false);
+            }
+        }
 
-        if (diff >= oneDay) {
-            data.days++;
-            data.lastUpdate = now;
-            saveStoredData(data);
-            updateIndexDisplay();
-            updateAdminDisplay();
-            showNotification(`Hari ke-${data.days} dimulai!`, false);
+        // Cek Kencur
+        let dataKencur = getStoredData(DB_KEY_KENCUR);
+        if (dataKencur.isRunning) {
+            const now = Date.now();
+            const diff = now - dataKencur.lastUpdate;
+            const oneDay = 24 * 60 * 60 * 1000;
+
+            if (diff >= oneDay) {
+                dataKencur.days++;
+                dataKencur.lastUpdate = now;
+                saveStoredData(DB_KEY_KENCUR, dataKencur);
+                updateIndexDisplay();
+                updateAdminDisplay();
+                showNotification(`Hari Kencur ke-${dataKencur.days} dimulai!`, false);
+            }
         }
     }, 1000); // Cek setiap 1 detik
 }
@@ -132,10 +158,18 @@ function stopTimer() {
 }
 
 function updateAdminDisplay() {
-    const data = getStoredData();
-    const displayEl = document.getElementById('current-day-display');
-    if (displayEl) {
-        displayEl.innerText = data.days;
+    // Update Kemangi
+    const dataKemangi = getStoredData(DB_KEY_KEMANGI);
+    const displayKemangi = document.getElementById('current-day-kemangi');
+    if (displayKemangi) {
+        displayKemangi.innerText = dataKemangi.days;
+    }
+
+    // Update Kencur
+    const dataKencur = getStoredData(DB_KEY_KENCUR);
+    const displayKencur = document.getElementById('current-day-kencur');
+    if (displayKencur) {
+        displayKencur.innerText = dataKencur.days;
     }
 }
 
@@ -155,8 +189,9 @@ function setupLogin() {
         loginPage.style.display = 'none';
         adminPage.style.display = 'flex';
         updateAdminDisplay();
-        const data = getStoredData();
-        if (data.isRunning) startTimer();
+        const dataKemangi = getStoredData(DB_KEY_KEMANGI);
+        const dataKencur = getStoredData(DB_KEY_KENCUR);
+        if (dataKemangi.isRunning || dataKencur.isRunning) startTimer();
     }
 
     form.addEventListener('submit', async (e) => {
@@ -196,8 +231,9 @@ function setupLogin() {
             errorMsg.style.display = 'none';
             resetLoginAttempts();
             updateAdminDisplay();
-            const data = getStoredData();
-            if (data.isRunning) startTimer();
+            const dataKemangi = getStoredData(DB_KEY_KEMANGI);
+            const dataKencur = getStoredData(DB_KEY_KENCUR);
+            if (dataKemangi.isRunning || dataKencur.isRunning) startTimer();
             showNotification('Login berhasil! Selamat datang Admin.');
         } else {
             // Login Gagal
@@ -227,120 +263,6 @@ function setupLogin() {
 }
 
 function setupAdminControls() {
-    const btnStart = document.getElementById('btn-start');
-    const btnPause = document.getElementById('btn-pause');
-    const btnStop = document.getElementById('btn-stop');
-    const btnPlus = document.getElementById('btn-plus');
-    const btnMinus = document.getElementById('btn-minus');
-    const btnReset = document.getElementById('reset-data-btn');
-
-    if (!btnStart) return;
-
-    // Tombol Mulai
-    btnStart.addEventListener('click', () => {
-        const data = getStoredData();
-        data.isRunning = true;
-        saveStoredData(data);
-        startTimer();
-        showNotification('Timer dimulai. Hari akan bertambah otomatis setiap 24 jam.');
-    });
-
-    // Tombol Jeda
-    btnPause.addEventListener('click', () => {
-        const data = getStoredData();
-        data.isRunning = false;
-        saveStoredData(data);
-        stopTimer();
-        showNotification('Timer dijeda.');
-    });
-
-    // Tombol Berhenti (Reset Hari ke 0)
-    btnStop.addEventListener('click', () => {
-        if(confirm('Apakah Anda yakin ingin mereset semua data ke 0 Hari?')) {
-            const data = { days: 0, lastUpdate: Date.now(), isRunning: false };
-            saveStoredData(data);
-            stopTimer();
-            updateAdminDisplay();
-            updateIndexDisplay();
-            showNotification('Data telah direset ke 0 Hari.');
-        }
-    });
-
-    // Tombol Manual +
-    btnPlus.addEventListener('click', () => {
-        const data = getStoredData();
-        data.days++;
-        data.lastUpdate = Date.now();
-        saveStoredData(data);
-        updateAdminDisplay();
-        updateIndexDisplay();
-        showNotification('Hari ditambah manual.');
-    });
-
-    // Tombol Manual -
-    btnMinus.addEventListener('click', () => {
-        const data = getStoredData();
-        if (data.days > 0) {
-            data.days--;
-            data.lastUpdate = Date.now();
-            saveStoredData(data);
-            updateAdminDisplay();
-            updateIndexDisplay();
-            showNotification('Hari dikurangi manual.');
-        } else {
-            showNotification('Hari tidak bisa kurang dari 0.', true);
-        }
-    });
-
-    // Tombol Reset Data Total
-    if (btnReset) {
-        btnReset.addEventListener('click', () => {
-            if(confirm('Hapus semua data dan reset login?')) {
-                localStorage.removeItem(DB_KEY);
-                localStorage.removeItem('loginAttempts');
-                localStorage.removeItem('lockoutEndTime');
-                location.reload();
-            }
-        });
-    }
-}
-
-/* ========================================== */
-/* 7. INISIALISASI & ANIMASI SCROLL          */
-/* ========================================== */
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Update tampilan index
-    updateIndexDisplay();
-
-    // Setup Login & Admin
-    if (document.getElementById('login-page')) {
-        setupLogin();
-    }
-
-    // Setup Kontrol Admin
-    if (document.getElementById('admin-page')) {
-        setupAdminControls();
-    }
-
-    /* --- Animasi Scroll --- */
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('scroll-visible');
-                entry.target.classList.remove('scroll-hidden', 'scroll-left', 'scroll-right', 'scroll-bottom');
-            }
-        });
-    }, observerOptions);
-
-    const hiddenElements = document.querySelectorAll('.scroll-hidden');
-    hiddenElements.forEach((el) => observer.observe(el));
-});
-
-
+    // --- KEMANGI CONTROLS ---
+    const btnStartKemangi = document.getElementById('btn-start-kemangi');
+    const btnPause
