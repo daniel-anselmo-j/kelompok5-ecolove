@@ -3,7 +3,7 @@
 /* ========================================== */
 const DB_KEY = 'kemangi_data_hari';
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD_HASH = '986d82f8267a13456b7fe17c9153383030ea65b4f1a419936346cdfe8e89538c'; // Hash dari 'admin123'
+const ADMIN_PASSWORD_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'; // Hash dari 'admin123'
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_TIME = 60000; // 60 detik
 
@@ -179,9 +179,9 @@ function setupLogin() {
         // --- VALIDASI USERNAME ---
         if (user !== ADMIN_USERNAME) {
             errorMsg.style.display = 'block';
-            errorMsg.innerText = 'Username salah!';
+            errorMsg.innerText = 'Username atau password salah!';
             handleFailedAttempt();
-            showNotification('Username salah!', true);
+            showNotification('Username atau password salah!', true);
             return;
         }
 
@@ -202,7 +202,7 @@ function setupLogin() {
         } else {
             // Login Gagal
             errorMsg.style.display = 'block';
-            errorMsg.innerText = 'Password salah!';
+            errorMsg.innerText = 'Password atau password salah!';
             
             const isNowLocked = handleFailedAttempt();
             
@@ -342,4 +342,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenElements = document.querySelectorAll('.scroll-hidden');
     hiddenElements.forEach((el) => observer.observe(el));
 });
+
 
