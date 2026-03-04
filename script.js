@@ -265,4 +265,170 @@ function setupLogin() {
 function setupAdminControls() {
     // --- KEMANGI CONTROLS ---
     const btnStartKemangi = document.getElementById('btn-start-kemangi');
-    const btnPause
+    const btnPauseKemangi = document.getElementById('btn-pause-kemangi');
+    const btnStopKemangi = document.getElementById('btn-stop-kemangi');
+    const btnPlusKemangi = document.getElementById('btn-plus-kemangi');
+    const btnMinusKemangi = document.getElementById('btn-minus-kemangi');
+
+    // --- KENCUR CONTROLS ---
+    const btnStartKencur = document.getElementById('btn-start-kencur');
+    const btnPauseKencur = document.getElementById('btn-pause-kencur');
+    const btnStopKencur = document.getElementById('btn-stop-kencur');
+    const btnPlusKencur = document.getElementById('btn-plus-kencur');
+    const btnMinusKencur = document.getElementById('btn-minus-kencur');
+
+    const btnReset = document.getElementById('reset-data-btn');
+
+    if (!btnStartKemangi) return;
+
+    // --- KEMANGI EVENT LISTENERS ---
+    btnStartKemangi.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KEMANGI);
+        data.isRunning = true;
+        saveStoredData(DB_KEY_KEMANGI, data);
+        startTimer();
+        showNotification('Timer Kemangi dimulai. Hari akan bertambah otomatis setiap 24 jam.');
+    });
+
+    btnPauseKemangi.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KEMANGI);
+        data.isRunning = false;
+        saveStoredData(DB_KEY_KEMANGI, data);
+        showNotification('Timer Kemangi dijeda.');
+    });
+
+    btnStopKemangi.addEventListener('click', () => {
+        if(confirm('Apakah Anda yakin ingin mereset data Kemangi ke 0 Hari?')) {
+            const data = { days: 0, lastUpdate: Date.now(), isRunning: false };
+            saveStoredData(DB_KEY_KEMANGI, data);
+            updateAdminDisplay();
+            updateIndexDisplay();
+            showNotification('Data Kemangi telah direset ke 0 Hari.');
+        }
+    });
+
+    btnPlusKemangi.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KEMANGI);
+        data.days++;
+        data.lastUpdate = Date.now();
+        saveStoredData(DB_KEY_KEMANGI, data);
+        updateAdminDisplay();
+        updateIndexDisplay();
+        showNotification('Hari Kemangi ditambah manual.');
+    });
+
+    btnMinusKemangi.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KEMANGI);
+        if (data.days > 0) {
+            data.days--;
+            data.lastUpdate = Date.now();
+            saveStoredData(DB_KEY_KEMANGI, data);
+            updateAdminDisplay();
+            updateIndexDisplay();
+            showNotification('Hari Kemangi dikurangi manual.');
+        } else {
+            showNotification('Hari tidak bisa kurang dari 0.', true);
+        }
+    });
+
+    // --- KENCUR EVENT LISTENERS ---
+    btnStartKencur.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KENCUR);
+        data.isRunning = true;
+        saveStoredData(DB_KEY_KENCUR, data);
+        startTimer();
+        showNotification('Timer Kencur dimulai. Hari akan bertambah otomatis setiap 24 jam.');
+    });
+
+    btnPauseKencur.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KENCUR);
+        data.isRunning = false;
+        saveStoredData(DB_KEY_KENCUR, data);
+        showNotification('Timer Kencur dijeda.');
+    });
+
+    btnStopKencur.addEventListener('click', () => {
+        if(confirm('Apakah Anda yakin ingin mereset data Kencur ke 0 Hari?')) {
+            const data = { days: 0, lastUpdate: Date.now(), isRunning: false };
+            saveStoredData(DB_KEY_KENCUR, data);
+            updateAdminDisplay();
+            updateIndexDisplay();
+            showNotification('Data Kencur telah direset ke 0 Hari.');
+        }
+    });
+
+    btnPlusKencur.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KENCUR);
+        data.days++;
+        data.lastUpdate = Date.now();
+        saveStoredData(DB_KEY_KENCUR, data);
+        updateAdminDisplay();
+        updateIndexDisplay();
+        showNotification('Hari Kencur ditambah manual.');
+    });
+
+    btnMinusKencur.addEventListener('click', () => {
+        const data = getStoredData(DB_KEY_KENCUR);
+        if (data.days > 0) {
+            data.days--;
+            data.lastUpdate = Date.now();
+            saveStoredData(DB_KEY_KENCUR, data);
+            updateAdminDisplay();
+            updateIndexDisplay();
+            showNotification('Hari Kencur dikurangi manual.');
+        } else {
+            showNotification('Hari tidak bisa kurang dari 0.', true);
+        }
+    });
+
+    // --- RESET DATA TOTAL ---
+    if (btnReset) {
+        btnReset.addEventListener('click', () => {
+            if(confirm('Hapus semua data dan reset login?')) {
+                localStorage.removeItem(DB_KEY_KEMANGI);
+                localStorage.removeItem(DB_KEY_KENCUR);
+                localStorage.removeItem('loginAttempts');
+                localStorage.removeItem('lockoutEndTime');
+                location.reload();
+            }
+        });
+    }
+}
+
+/* ========================================== */
+/* 7. INISIALISASI & ANIMASI SCROLL          */
+/* ========================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Update tampilan index
+    updateIndexDisplay();
+
+    // Setup Login & Admin
+    if (document.getElementById('login-page')) {
+        setupLogin();
+    }
+
+    // Setup Kontrol Admin
+    if (document.getElementById('admin-page')) {
+        setupAdminControls();
+    }
+
+    /* --- Animasi Scroll --- */
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('scroll-visible');
+                entry.target.classList.remove('scroll-hidden', 'scroll-left', 'scroll-right', 'scroll-bottom');
+            }
+        });
+    }, observerOptions);
+
+    const hiddenElements = document.querySelectorAll('.scroll-hidden');
+    hiddenElements.forEach((el) => observer.observe(el));
+});
